@@ -3,26 +3,89 @@
 
 
 <h2>Search in TMDb</h2>
-<%# Part 5 here %>
+
+<% flash.each do |key, value| %>
+  <div class="alert alert-<%= key %> alert-dismissible fade show"
+       role="alert">
+    <%= value %>
+    <button type="button" class="btn-close"
+            data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% end %>
 
 <div class="search-container">
-<%# Part 1 here %>
-<%= form_tag <%# fill in here #%> do %>
-    <label for="searchMovieName">Movie Name</label>
-    <%= text_field_tag 'title', nil, class: "form-control", id: "movie_title_field", placeholder: "Manhunter", id: "movie_title_field"%> 
-    <label for="searchReleaseDateField">Release Year</label>
-    <%= text_field_tag 'release_year', nil, class: "form-control", id: "movie_year_field", placeholder: "1986", id: "movie_year_field"%>
-  
-  <div class="form-check">
-    <%= radio_button_tag 'language', 'en', false, class: "form-check-input" %>
-    <label class="form-check-label" for="language_en">English Only</label>
-  </div>
+  <%= form_tag search_tmdb_path, method: :get, id: 'tmdb_form' do %>
+    <%= label_tag 'movie_title_field', 'Movie Name' %>
+    <%= text_field_tag 'title', params[:title],
+        class: 'form-control',
+        id: 'movie_title_field',
+        placeholder: 'Manhunter' %>
 
-  <div class="form-check">
-    <%= radio_button_tag 'language', 'all', true, class: "form-check-input" %>
-    <label class="form-check-label" for="language_all">All Languages</label>
-  </div>
-  <%= submit_tag 'Search', id: 'tmdb_submit', class: 'btn btn-warning col-2' %>
-  
-<% end %>
+    <%= label_tag 'movie_year_field', 'Release Year' %>
+    <%= text_field_tag 'release_year', params[:release_year],
+        class: 'form-control',
+        id: 'movie_year_field',
+        placeholder: '1986' %>
+
+    <div class="form-check">
+      <%= radio_button_tag 'language', 'en',
+          params[:language] == 'en',
+          class: 'form-check-input' %>
+      <%= label_tag 'language_en', 'English Only',
+          class: 'form-check-label' %>
+    </div>
+
+    <div class="form-check">
+      <%= radio_button_tag 'language', 'all',
+          params[:language] != 'en',
+          class: 'form-check-input' %>
+      <%= label_tag 'language_all', 'All Languages',
+          class: 'form-check-label' %>
+    </div>
+
+    <%= submit_tag 'Search',
+        id: 'tmdb_submit',
+        class: 'btn btn-warning col-2' %>
+  <% end %>
 </div>
+
+<% if @movies.present? %>
+  <table id="search_movies" class="table table-striped mt-3">
+    <thead>
+      <tr>
+        <th>Movie Title</th>
+        <th>Rating</th>
+        <th>Release Date</th>
+        <th>Description</th>
+        <th>Add Movie</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @movies.each do |movie| %>
+        <tr>
+          <td><%= movie.title %></td>
+          <td><%= movie.rating %></td>
+          <td><%= movie.release_date %></td>
+          <td><%= movie.description %></td>
+          <td>
+            <%= form_tag add_movie_path, method: :post do %>
+              <%= hidden_field_tag 'movie[title]', movie.title %>
+              <%= hidden_field_tag 'movie[rating]', movie.rating %>
+              <%= hidden_field_tag 'movie[release_date]',
+                  movie.release_date %>
+              <%= hidden_field_tag 'movie[description]',
+                  movie.description %>
+
+              <%= submit_tag 'Add movie',
+                  class: 'btn btn-primary' %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+
+<%= link_to 'Back to movie list', movies_path,
+    class: 'btn btn-primary' %>

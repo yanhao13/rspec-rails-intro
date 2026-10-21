@@ -10,6 +10,7 @@ gem 'uglifier', '>= 2.7.1'
 gem 'jquery-rails'
 gem 'bigdecimal', '1.3.5'
 gem 'web-console', '~> 4'
+gem 'faraday', '1.8.0'
 
 # for Heroku deployment - as described in Ap. A of ELLS book
 group :development, :test do
@@ -24,6 +25,11 @@ group :development, :test do
   gem 'sqlite3', '~> 1.7'
 end
 
+group :test do
+  gem 'rails-controller-testing'
+  gem 'guard-rspec'
+  gem 'webmock'
+end
 group :production do
   gem 'pg', '~> 0.2'
   gem 'rails_12factor'
