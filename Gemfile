@@ -31,6 +31,7 @@ group :test do
   gem 'webmock'
 end
 group :production do
-  gem 'pg', '~> 0.2'
+  gem 'pg'
 end
 gem 'rails_12factor', group: :production
+gem 'json', '~> 2.7.0'
