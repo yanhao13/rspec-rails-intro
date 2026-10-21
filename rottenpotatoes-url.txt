@@ -1,1 +1,1 @@
-http://rottenpotatoes-url-7125b3a75df0.herokuapp.com
+http://herokuapp.com
